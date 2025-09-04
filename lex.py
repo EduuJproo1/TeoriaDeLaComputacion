@@ -5,25 +5,45 @@ KEYWORDS = {'if', 'else', 'while', 'return', 'int', 'float', 'bool'}
 
 # Definición de tokens
 TOKEN_SPECIFICATION = [
-    ('STRING',    r'"[^"\n]*"'),                  # Cadena entre comillas dobles
-    ('COMMENT',   r'(//.*|#.*)'),                 # Comentarios de línea
-    ('INCREMENT', r'\+\+'),                       # Operador incremento
-    ('DECREMENT', r'--'),                         # Operador decremento
-    ('OP_EQ',     r'=='),                         # Igualdad
-    ('OP_ASSIGN', r'='),                          # Asignación
-    ('OP_PLUS',   r'\+'),                         # Suma
-    ('OP_MINUS',  r'-'),                          # Resta
-    ('OP_MUL',    r'\*'),                         # Multiplicación
-    ('OP_DIV',    r'/'),                          # División
-    ('NUMBER',    r'\b\d+(\.\d+)?\b'),            # Número entero o decimal
-    ('IDENT',     r'\b[a-zA-Z_][a-zA-Z_0-9]*\b'), # Identificador válido
-    ('LPAREN',    r'\('),                         # Paréntesis izquierdo
-    ('RPAREN',    r'\)'),                         # Paréntesis derecho
-    ('LBRACE',    r'\{'),                         # Llave izquierda
-    ('RBRACE',    r'\}'),                         # Llave derecha
-    ('SEMICOLON', r';'),                          # Punto y coma
-    ('WHITESPACE',r'\s+'),                        # Espacios y saltos de línea
-    ('UNKNOWN',   r'.'),                          # Carácter desconocido (error léxico)
+    ('STRING',     r'"([^"\\\n]|\\.)*"'),          # Cadenas string
+    ('COMMENT',    r'(//.*|#.*)'),                 # Comentarios de línea
+    
+    # Operadores especiales
+    ('INCREMENT',  r'\+\+'),                       # ++
+    ('DECREMENT',  r'--'),                         # --
+    
+    # Operadores lógicos y relacionales
+    ('OP_AND',     r'&&'),                         # &&
+    ('OP_OR',      r'\|\|'),                       # ||
+    ('OP_NEQ',     r'!='),                         # !=
+    ('OP_LTE',     r'<='),                         # <=
+    ('OP_GTE',     r'>='),                         # >=
+    ('OP_EQ',      r'=='),                         # ==
+    ('OP_NOT',     r'!'),                          # !
+    ('OP_LT',      r'<'),                          # <
+    ('OP_GT',      r'>'),                          # >
+
+    # Operadores matemáticos y asignación
+    ('OP_ASSIGN',  r'='),                          # =
+    ('OP_PLUS',    r'\+'),                         # +
+    ('OP_MINUS',   r'-'),                          # -
+    ('OP_MUL',     r'\*'),                         # *
+    ('OP_DIV',     r'/'),                          # /
+
+    # Operador ternario y concatenación
+    ('OP_TERNARY', r'\?|:'),                       # ? y :
+    ('DOT',        r'\.'),                         # .
+
+    # Tokens generales
+    ('NUMBER',     r'\b\d+(\.\d+)?\b'),            # Números enteros y decimales
+    ('IDENT',      r'\b[a-zA-Z_][a-zA-Z_0-9]*\b'), # Identificadores
+    ('LPAREN',     r'\('),                         # (
+    ('RPAREN',     r'\)'),                         # )
+    ('LBRACE',     r'\{'),                         # {
+    ('RBRACE',     r'\}'),                         # }
+    ('SEMICOLON',  r';'),                          # ;
+    ('WHITESPACE', r'\s+'),                        # Espacios y saltos
+    ('UNKNOWN',    r'.'),                          # Cualquier carácter no reconocido
 ]
 
 # Compilar expresiones regulares en una sola expresión
@@ -58,15 +78,17 @@ def lexer(code):
 
 # Prueba de lexer
 if __name__ == '__main__':
-    test_code = '''
-    int x = 10;
-    if (x == 10) {
-        x = x + 1;
-        // incremento
-        x++;
-    }
-    '''
+    archivo = 'entrada.txt'
 
-    result = lexer(test_code)
-    for kind, value, line, column in result:
-        print(f'{kind:12} | {value:8} | línea {line}, columna {column}')
+    try:
+        with open(archivo, 'r', encoding='utf-8') as f:
+            codigo_fuente = f.read()
+
+        resultado = lexer(codigo_fuente)
+
+        print(f'Análisis léxico del archivo: {archivo}\n')
+        for tipo, valor, linea, columna in resultado:
+            print(f'{tipo:12} | {valor:10} | línea {linea}, columna {columna}')
+
+    except FileNotFoundError:
+        print(f'Error: No se encontró el archivo "{archivo}".')
