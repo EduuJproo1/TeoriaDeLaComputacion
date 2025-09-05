@@ -1,11 +1,11 @@
 import re
 
 # Palabras clave
-KEYWORDS = {'if', 'else', 'while', 'return', 'int', 'float', 'bool'}
+KEYWORDS = {'if', 'else', 'while', 'return', 'int', 'float', 'string', 'bool'}
 
 # Definición de tokens
 TOKEN_SPECIFICATION = [
-    ('STRING',     r'"([^"\\\n]|\\.)*"'),          # Cadenas string
+    ('STRING',     r'"([^"\\\n]|\\.)*"'),          # Cadenas
     ('COMMENT',    r'(//.*|#.*)'),                 # Comentarios de línea
     
     # Operadores especiales
